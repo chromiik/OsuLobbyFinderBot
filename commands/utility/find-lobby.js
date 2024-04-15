@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const cheerio = require('cheerio');
 const { osuAPIKey } = require('../../config.json');
  
 module.exports = {
