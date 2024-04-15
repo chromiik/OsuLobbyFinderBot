@@ -1,0 +1,5 @@
+{
+	"token": "bot-token",
+    "clientId": "application-id",
+    "osuAPIKey": "osu-api-key"
+}
