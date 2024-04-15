@@ -32,7 +32,6 @@ module.exports = {
             await interaction.deferReply();
             const lookingMessage = await interaction.editReply({
                 content: 'looking for a lobby',
-                components: [actionRow],
             });
 
             let lobbyId = null;
