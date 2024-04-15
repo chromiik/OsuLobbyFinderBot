@@ -1,51 +1,74 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 const fetch = require('node-fetch');
 const { osuAPIKey } = require('../../config.json');
- 
+
+//let stopFinding = false;
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('find-lobby')
         .setDescription('Finds the most recent lobby')
-        .addStringOption(option => 
+        .addStringOption(option =>
             option
                 .setName('lobby-name')
                 .setDescription('String included in the lobby title'))
-        .addIntegerOption(option => 
+        .addIntegerOption(option =>
             option
                 .setName('starting-id')
                 .setDescription('Starting lobby ID')),
-    async execute(interaction){
+    async execute(interaction) {
         const target = interaction.options.getString('lobby-name');
         const startingId = interaction.options.getInteger('starting-id');
-        let lobbyId = null;
-        let attempts = 0;
-        
+       /*
+        const stopButton = new ButtonBuilder()
+            .setCustomId('stopButton')
+            .setLabel('stop')
+            .setStyle(ButtonStyle.Danger);
+
+        const actionRow = new ActionRowBuilder()
+            .addComponents(stopButton);
+        */
         try {
             await interaction.deferReply();
-            
+            const lookingMessage = await interaction.editReply({
+                content: 'looking for a lobby',
+                components: [actionRow],
+            });
+
+            let lobbyId = null;
+            let attempts = 0;
+
             while (!lobbyId) {
                 try {
                     lobbyId = await findLobby(target, startingId - attempts);
                 } catch (error) {
                     console.error('Error finding lobby:', error);
                 }
+
                 attempts++;
+
                 if (lobbyId) {
-                    await interaction.editReply(`Lobby found with URL: https://osu.ppy.sh/community/matches/${lobbyId}`);
+                    await lookingMessage.edit(`Lobby found with URL: https://osu.ppy.sh/community/matches/${lobbyId}`);
                 } else {
-                    await new Promise(resolve => setTimeout(resolve, 5000)); 
+                    await new Promise(resolve => setTimeout(resolve, 5000));
                 }
             }
+
         } catch (error) {
             console.error('Error finding lobby:', error);
             await interaction.editReply('An error occurred while finding the lobby.');
         }
     }
 };
+
+
+
+
+
 async function findLobby(target, startingId) {
     let lobbyId = null;
     let attempts = 0;
-    
+
     while (!lobbyId) {
         const url = `https://osu.ppy.sh/api/get_match?k=${osuAPIKey}&mp=${startingId - attempts}&limit=1`;
 

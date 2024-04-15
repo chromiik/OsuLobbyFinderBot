@@ -46,6 +46,12 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 });
 
+client.on("interactionCreate", (interaction) => {
+    if(!interaction.isButton()){
+        return;
+    }
+})
+
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
