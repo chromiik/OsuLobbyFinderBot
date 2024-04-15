@@ -63,9 +63,6 @@ module.exports = {
 };
 
 
-
-
-
 async function findLobby(target, startingId) {
     let lobbyId = null;
     let attempts = 0;
@@ -78,7 +75,7 @@ async function findLobby(target, startingId) {
             const data = await response.json();
             console.log(data);
 
-            if (data.match && data.match.name && data.match.name.includes(target)) {
+            if (data.match.name.includes(target)) {
                 lobbyId = data.match.match_id;
             }
         } catch (error) {
