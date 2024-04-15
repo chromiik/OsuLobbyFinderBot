@@ -11,11 +11,13 @@ module.exports = {
         .addStringOption(option =>
             option
                 .setName('lobby-name')
-                .setDescription('String included in the lobby title'))
+                .setDescription('String included in the lobby title')
+                .setRequired(true))
         .addIntegerOption(option =>
             option
                 .setName('starting-id')
-                .setDescription('Starting lobby ID')),
+                .setDescription('Starting lobby ID')
+                .setRequired(true)),
     async execute(interaction) {
         const target = interaction.options.getString('lobby-name');
         const startingId = interaction.options.getInteger('starting-id');
@@ -31,7 +33,7 @@ module.exports = {
         try {
             await interaction.deferReply();
             const lookingMessage = await interaction.editReply({
-                content: 'looking for a lobby',
+                content: 'Looking for a lobby..',
             });
 
             let lobbyId = null;
